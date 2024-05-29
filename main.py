@@ -9,7 +9,7 @@ def replace_characters(base_string, replacements):
         variations.extend(new_variations)
     return set(variations)
 
-def generate_variations(password, max_variations=100000):
+def generate_variations(password, max_variations=100000, duplicate=False):
     replacements = {
         'a': '@', 'A': '@',
         'e': '3', 'E': '3',
@@ -54,13 +54,23 @@ def generate_variations(password, max_variations=100000):
         if len(final_variations) > max_variations:
             break
 
+    # Step 5: Add duplicate option
+    if duplicate:
+        duplicated_variations = set()
+        for variation in final_variations:
+            duplicated_variations.add(variation + variation)
+        final_variations.update(duplicated_variations)
+        if len(final_variations) > max_variations:
+            final_variations = set(list(final_variations)[:max_variations])
+
     return list(final_variations)[:max_variations]
 
 def main():
     potential_passwords = ["example password", "test123", "mypassword"]
     all_variations = []
+    duplicate_option = True  # Set to False if you don't want the duplicate feature
     for password in potential_passwords:
-        variations = generate_variations(password)
+        variations = generate_variations(password, duplicate=duplicate_option)
         all_variations.extend(variations)
     
     print(f"Generated {len(all_variations)} variations.")
